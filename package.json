@@ -1,8 +1,8 @@
 {
   "name": "pips_resources_definitions",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "the TS npm package that centralizes all the resources definitions for the PIPS project",
-  "main": "dist/resources.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
   },

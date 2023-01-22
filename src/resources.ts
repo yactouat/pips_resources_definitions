@@ -1,3 +1,5 @@
+import { APIResponseType, BuildStateType } from "./types";
+
 export interface BlogPostResource {
   contents: string;
   date: string;
@@ -41,5 +43,3 @@ export interface BuildResource {
   uid: string;
   url: string;
 }
-
-export type BuildStateType = "ERROR" | "READY" | "MASKED";
