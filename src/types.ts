@@ -3,4 +3,4 @@ export type APIResponseType = {
   data: {}[] | {} | null;
 };
 
-export type BuildStateType = "ERROR" | "READY" | "MASKED";
+export type BuildResourceStateType = "ERROR" | "READY" | "MASKED";

@@ -1,4 +1,4 @@
-import { APIResponseType, BuildStateType } from "./types";
+import { BuildResourceStateType } from "./types";
 
 export interface BlogPostResource {
   contents: string;
@@ -38,8 +38,16 @@ export interface BuildResource {
   };
   name: string;
   ready: number;
-  state: BuildStateType;
+  state: BuildResourceStateType;
   type: string;
   uid: string;
   url: string;
+}
+
+export interface ImageResource {
+  alt: string;
+  b64: string;
+  caption: string;
+  name: string;
+  public: boolean;
 }
