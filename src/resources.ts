@@ -1,4 +1,19 @@
-import { BuildResourceStateType } from "./types";
+import {
+  APIAccessScopeType,
+  BuildResourceStateType,
+  SocialHandleType,
+} from "./types";
+
+export interface APIKeyResource {
+  apiAccessScopes: APIAccessScopeType[];
+  key: string;
+  name: string;
+  userId: number;
+}
+
+export interface AuthTokenResource {
+  token: string;
+}
 
 export interface BlogPostResource {
   contents: string;
@@ -50,4 +65,13 @@ export interface ImageResource {
   caption: string;
   name: string;
   public: boolean;
+}
+
+export interface UserResource {
+  email: string;
+  socialHandle: string;
+  socialHandleType: SocialHandleType;
+  password: string;
+  trusted: boolean;
+  verified: boolean;
 }
