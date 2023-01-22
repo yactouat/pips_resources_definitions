@@ -1,15 +1,4 @@
-import {
-  APIAccessScopeType,
-  BuildResourceStateType,
-  SocialHandleType,
-} from "./types";
-
-export interface APIKeyResource {
-  apiAccessScopes: APIAccessScopeType[];
-  key: string;
-  name: string;
-  userId: number;
-}
+import { BuildResourceStateType, SocialHandleType } from "./types";
 
 export interface AuthTokenResource {
   token: string;
@@ -72,6 +61,5 @@ export interface UserResource {
   socialHandle: string;
   socialHandleType: SocialHandleType;
   password: string;
-  trusted: boolean;
   verified: boolean;
 }

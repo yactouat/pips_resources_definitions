@@ -1,10 +1,3 @@
-export type APIAccessLevelType = "SELF" | "MODERATOR" | "ADMIN";
-
-export type APIAccessScopeType = {
-  level: APIAccessLevelType;
-  resource: CRUDResourceType;
-};
-
 export type APIResponseType = {
   msg: string;
   data: {}[] | {} | null;
@@ -13,7 +6,6 @@ export type APIResponseType = {
 export type BuildResourceStateType = "ERROR" | "READY" | "MASKED";
 
 export type CRUDResourceType =
-  | "APIKey"
   | "AuthToken"
   | "BlogPost"
   | "Build"
