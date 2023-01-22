@@ -1,0 +1,14 @@
+{
+  "name": "pips_resources_definitions",
+  "version": "1.0.0",
+  "description": "the TS npm package that centralizes all the resources definitions for the PIPS project",
+  "main": "dist/resources.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pips"
+  ],
+  "author": "Yacine Touati <yacine.touati.pro@gmail.com>",
+  "license": "MIT"
+}
