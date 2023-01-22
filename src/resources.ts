@@ -1,3 +1,10 @@
+export interface BlogPostResource {
+  contents: string;
+  date: string;
+  slug: string;
+  title: string;
+}
+
 export interface BuildResource {
   aliasAssigned: number | null;
   aliasError: string | null;
