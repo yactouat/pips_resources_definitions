@@ -60,6 +60,6 @@ export interface UserResource {
   email: string;
   socialHandle: string;
   socialHandleType: SocialHandleType;
-  password: string;
+  password: string | null;
   verified: boolean;
 }
