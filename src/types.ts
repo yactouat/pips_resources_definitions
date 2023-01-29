@@ -12,6 +12,15 @@ export type CRUDResourceType =
   | "Image"
   | "User";
 
+export interface PgClientConfigType {
+  database: string;
+  host: string;
+  ssl?: {
+    ca: string;
+  };
+  user?: string;
+}
+
 export type SocialHandleType = "GitHub" | "LinkedIn";
 
 export interface VercelDeploymentType {
