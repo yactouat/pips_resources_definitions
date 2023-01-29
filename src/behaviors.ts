@@ -53,7 +53,7 @@ export const decodePubSubMessage = (req: {
   return message;
 };
 
-const getPgClient = () => {
+export const getPgClient = () => {
   // loading .env file only in development
   if (process.env.NODE_ENV === "development") {
     require("dotenv").config();
