@@ -11,7 +11,7 @@
 
 ## what is this ?
 
-the TS npm package that centralizes all the resources definitions for the PIPS project
+the TS npm package that centralizes all the resources definitions and common behaviors for the PIPS project
 
 ## pre requisites
 
