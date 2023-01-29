@@ -3,6 +3,7 @@ import fs from "fs";
 import jwtDecode from "jwt-decode";
 
 import { PgClientConfigType } from "./types";
+import { UserResource } from "./resources";
 
 export const comesFromLegitPubSub = (
   req: {
@@ -53,7 +54,7 @@ export const decodePubSubMessage = (req: {
   return message;
 };
 
-export const getPgClient = () => {
+export const getPgClient = (): Client => {
   // loading .env file only in development
   if (process.env.NODE_ENV === "development") {
     require("dotenv").config();
@@ -78,4 +79,16 @@ export const getPgClient = () => {
     };
   }
   return new Client(pgClientConfig);
+};
+
+export const getUserFromDb = async (
+  email: string,
+  pgClient: Client
+): Promise<UserResource> => {
+  const userSelectQuery = await pgClient.query(
+    `SELECT * FROM users WHERE email = $1`,
+    [email]
+  );
+  const user = userSelectQuery.rows[0] as UserResource;
+  return user;
 };
