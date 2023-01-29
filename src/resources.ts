@@ -1,6 +1,7 @@
 import { SocialHandleType } from "./types";
 
 export interface AuthTokenResource {
+  expired?: boolean;
   token: string;
   type: string;
 }
