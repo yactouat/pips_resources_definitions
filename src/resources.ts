@@ -1,4 +1,4 @@
-import { SocialHandleType } from "./types";
+import { SocialHandleType, TokenType } from "./types";
 
 export interface BlogPostResource {
   contents: string;
@@ -18,7 +18,7 @@ export interface ImageResource {
 export interface TokenResource {
   expired?: boolean;
   token: string;
-  type: string;
+  type: TokenType;
 }
 
 export interface UserResource {
