@@ -1,4 +1,4 @@
-import { BuildResourceStateType, SocialHandleType } from "./types";
+import { SocialHandleType } from "./types";
 
 export interface AuthTokenResource {
   token: string;
