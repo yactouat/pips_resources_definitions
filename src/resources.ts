@@ -2,6 +2,7 @@ import { SocialHandleType } from "./types";
 
 export interface AuthTokenResource {
   token: string;
+  type: string;
 }
 
 export interface BlogPostResource {
