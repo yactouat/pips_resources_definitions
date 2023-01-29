@@ -16,12 +16,14 @@ export interface ImageResource {
 }
 
 export interface TokenResource {
+  id?: number;
   expired?: boolean;
   token: string;
   type: TokenType;
 }
 
 export interface UserResource {
+  id?: number;
   email: string;
   socialHandle: string;
   socialHandleType: SocialHandleType;
