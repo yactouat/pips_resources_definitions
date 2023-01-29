@@ -1,11 +1,5 @@
 import { SocialHandleType } from "./types";
 
-export interface AuthTokenResource {
-  expired?: boolean;
-  token: string;
-  type: string;
-}
-
 export interface BlogPostResource {
   contents: string;
   date: string;
@@ -19,6 +13,12 @@ export interface ImageResource {
   caption: string;
   name: string;
   public: boolean;
+}
+
+export interface TokenResource {
+  expired?: boolean;
+  token: string;
+  type: string;
 }
 
 export interface UserResource {
