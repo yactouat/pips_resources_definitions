@@ -3,7 +3,7 @@ import { Response } from "express";
 import fs from "fs";
 import jwtDecode from "jwt-decode";
 
-import { PgClientConfigType } from "./types";
+import { MigrationType, PgClientConfigType } from "./types";
 import { UserResource } from "./resources";
 
 export const comesFromLegitPubSub = (
@@ -94,6 +94,20 @@ export const getUserFromDb = async (
   const user = userSelectQuery.rows[0] as UserResource;
   await pgClient.end();
   return user;
+};
+
+export const migrateDb = async () => {
+  // scan `migrations` folder
+  const sqlScripts = fs.readdirSync("sql");
+  const pgClient = getPgClient();
+  pgClient.connect();
+  // run each migration in ascending order
+  for (let i = 0; i < fs.readdirSync("sql").length; i++) {
+    if (sqlScripts[i].endsWith(".sql")) {
+      await new MigrationType(sqlScripts[i], pgClient).up();
+    }
+  }
+  pgClient.end();
 };
 
 export const sendJsonResponse = (

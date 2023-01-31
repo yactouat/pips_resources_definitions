@@ -1,3 +1,6 @@
+import { Client } from "pg";
+import fs from "fs";
+
 export type APIResponseType = {
   msg: string;
   data: {}[] | {} | null;
@@ -11,6 +14,24 @@ export type CRUDResourceType =
   | "Build"
   | "Image"
   | "User";
+
+export class MigrationType {
+  constructor(
+    private readonly sqlFileName: string,
+    private readonly pgClient: Client
+  ) {}
+
+  async up(): Promise<boolean> {
+    let query = fs.readFileSync(`sql/${this.sqlFileName}`, "utf8");
+    try {
+      await this.pgClient.query(query);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
+  }
+}
 
 export interface PgClientConfigType {
   database: string;
