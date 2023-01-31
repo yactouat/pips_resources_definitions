@@ -1,4 +1,5 @@
 import { Client } from "pg";
+import { Response } from "express";
 import fs from "fs";
 import jwtDecode from "jwt-decode";
 
@@ -93,4 +94,16 @@ export const getUserFromDb = async (
   const user = userSelectQuery.rows[0] as UserResource;
   await pgClient.end();
   return user;
+};
+
+export const sendJsonResponse = (
+  res: Response,
+  status: number,
+  msg: string,
+  data: {}[] | {} | null = null
+) => {
+  res.status(status).json({
+    msg,
+    data,
+  });
 };
