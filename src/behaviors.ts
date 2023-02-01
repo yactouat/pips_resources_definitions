@@ -91,10 +91,10 @@ export const getUserFromDb = async (
     `SELECT * FROM users WHERE email = $1`,
     [email]
   );
-  if (userSelectQuery.rowCount === 0) {
-    return null;
+  let user: UserResource | null = null;
+  if (userSelectQuery.rowCount > 0) {
+    user = userSelectQuery.rows[0] as UserResource;
   }
-  const user = userSelectQuery.rows[0] as UserResource;
   await pgClient.end();
   return user;
 };
