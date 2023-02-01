@@ -85,12 +85,15 @@ export const getPgClient = (): Client => {
 export const getUserFromDb = async (
   email: string,
   pgClient: Client
-): Promise<UserResource> => {
+): Promise<UserResource | null> => {
   await pgClient.connect();
   const userSelectQuery = await pgClient.query(
     `SELECT * FROM users WHERE email = $1`,
     [email]
   );
+  if (userSelectQuery.rowCount === 0) {
+    return null;
+  }
   const user = userSelectQuery.rows[0] as UserResource;
   await pgClient.end();
   return user;
