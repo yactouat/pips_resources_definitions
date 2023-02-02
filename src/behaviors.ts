@@ -94,6 +94,7 @@ export const getUserFromDbWithEmail = async (
   let user: UserResource | null = null;
   if (userSelectQuery.rowCount > 0) {
     user = userSelectQuery.rows[0] as UserResource;
+    user.password = null;
   }
   await pgClient.end();
   return user;
@@ -111,6 +112,7 @@ export const getUserFromDbWithId = async (
   let user: UserResource | null = null;
   if (userSelectQuery.rowCount > 0) {
     user = userSelectQuery.rows[0] as UserResource;
+    user.password = null;
   }
   await pgClient.end();
   return user;
