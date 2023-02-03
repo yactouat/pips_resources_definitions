@@ -84,7 +84,8 @@ export const getPgClient = (): Client => {
 
 export const getUserFromDbWithEmail = async (
   email: string,
-  pgClient: Client
+  pgClient: Client,
+  hideUserPassword = true
 ): Promise<UserResource | null> => {
   await pgClient.connect();
   const userSelectQuery = await pgClient.query(
@@ -94,7 +95,7 @@ export const getUserFromDbWithEmail = async (
   let user: UserResource | null = null;
   if (userSelectQuery.rowCount > 0) {
     user = userSelectQuery.rows[0] as UserResource;
-    user.password = null;
+    user.password = hideUserPassword ? null : user.password;
   }
   await pgClient.end();
   return user;
