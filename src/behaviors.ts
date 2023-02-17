@@ -1,10 +1,11 @@
 import { Client } from "pg";
+import crypto from "crypto";
 import { Response } from "express";
 import fs from "fs";
 import jwtDecode from "jwt-decode";
 
 import { MigrationType, PgClientConfigType } from "./types";
-import { UserResource } from "./resources";
+import { TokenResource, UserResource } from "./resources";
 
 export const comesFromLegitPubSub = (
   req: {
@@ -138,6 +139,45 @@ export const parseUserId = (userId: string | number | null): number | null => {
     return parseInt(userId as string);
   }
   return null;
+};
+
+export const saveUserVerifToken = async (
+  userEmail: string
+): Promise<boolean> => {
+  let outcome = false;
+  // we need two connections here: one for the token and one for the association, that uses the returned token id
+  const pgClient1 = getPgClient();
+  const pgClient2 = getPgClient();
+  // creating a validation token
+  const verifToken: TokenResource = {
+    type: "User_Verification",
+    token: crypto.randomBytes(32).toString("hex"),
+  };
+  try {
+    // get user linked to email
+    const user = await getUserFromDbWithEmail(userEmail, getPgClient());
+    if (user != null) {
+      // store validation token in database
+      await pgClient1.connect();
+      const insertToken = await pgClient1.query(
+        "INSERT INTO tokens(token) VALUES ($1) RETURNING *",
+        [verifToken.token]
+      );
+      await pgClient1.end();
+      const token = insertToken.rows[0] as TokenResource;
+      // store token association with user in database
+      await pgClient2.connect();
+      await pgClient2.query(
+        "INSERT INTO tokens_users(token_id, user_id, type) VALUES ($1, $2, $3) RETURNING *",
+        [token.id, user.id, verifToken.type.toLowerCase()]
+      );
+      await pgClient2.end();
+      outcome = true;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return outcome;
 };
 
 export const sendJsonResponse = (
