@@ -144,8 +144,8 @@ export const parseUserId = (userId: string | number | null): number | null => {
 export const saveUserToken = async (
   userEmail: string,
   tokenType: TokenType
-): Promise<boolean> => {
-  let outcome = false;
+): Promise<string> => {
+  let createdToken = "";
   // we need two connections here: one for the token and one for the association, that uses the returned token id
   const tokenInsertionQueryClient = getPgClient();
   const tokenAssociationQueryClient = getPgClient();
@@ -173,12 +173,12 @@ export const saveUserToken = async (
         [token.id, user.id, newToken.type.toLowerCase()]
       );
       await tokenAssociationQueryClient.end();
-      outcome = true;
+      createdToken = newToken.token;
     }
   } catch (error) {
     console.error(error);
   }
-  return outcome;
+  return createdToken;
 };
 
 export const sendJsonResponse = (
