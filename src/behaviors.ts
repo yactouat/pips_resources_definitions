@@ -56,6 +56,10 @@ export const decodePubSubMessage = (req: {
   return message;
 };
 
+export const generateToken = (): string => {
+  return crypto.randomBytes(32).toString("hex");
+};
+
 export const getPgClient = (): Client => {
   // loading .env file only in development
   if (process.env.NODE_ENV === "development") {
@@ -152,7 +156,7 @@ export const saveUserToken = async (
   // creating a token
   const newToken: TokenResource = {
     type: tokenType,
-    token: crypto.randomBytes(32).toString("hex"),
+    token: generateToken(),
   };
   try {
     // get user linked to email
