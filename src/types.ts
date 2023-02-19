@@ -44,7 +44,10 @@ export interface PgClientConfigType {
 
 export type SocialHandleType = "GitHub" | "LinkedIn";
 
-export type TokenType = "User_Authentication" | "User_Verification";
+export type TokenType =
+  | "User_Authentication"
+  | "User_Modification"
+  | "User_Verification";
 
 export interface VercelDeploymentType {
   aliasAssigned: number | null;

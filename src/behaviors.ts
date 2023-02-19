@@ -4,7 +4,7 @@ import { Response } from "express";
 import fs from "fs";
 import jwtDecode from "jwt-decode";
 
-import { MigrationType, PgClientConfigType } from "./types";
+import { MigrationType, PgClientConfigType, TokenType } from "./types";
 import { TokenResource, UserResource } from "./resources";
 
 export const comesFromLegitPubSub = (
@@ -141,37 +141,38 @@ export const parseUserId = (userId: string | number | null): number | null => {
   return null;
 };
 
-export const saveUserVerifToken = async (
-  userEmail: string
+export const saveUserToken = async (
+  userEmail: string,
+  tokenType: TokenType
 ): Promise<boolean> => {
   let outcome = false;
   // we need two connections here: one for the token and one for the association, that uses the returned token id
-  const pgClient1 = getPgClient();
-  const pgClient2 = getPgClient();
-  // creating a validation token
-  const verifToken: TokenResource = {
-    type: "User_Verification",
+  const tokenInsertionQueryClient = getPgClient();
+  const tokenAssociationQueryClient = getPgClient();
+  // creating a token
+  const newToken: TokenResource = {
+    type: tokenType,
     token: crypto.randomBytes(32).toString("hex"),
   };
   try {
     // get user linked to email
     const user = await getUserFromDbWithEmail(userEmail, getPgClient());
     if (user != null) {
-      // store validation token in database
-      await pgClient1.connect();
-      const insertToken = await pgClient1.query(
+      // store token in database
+      await tokenInsertionQueryClient.connect();
+      const insertToken = await tokenInsertionQueryClient.query(
         "INSERT INTO tokens(token) VALUES ($1) RETURNING *",
-        [verifToken.token]
+        [newToken.token]
       );
-      await pgClient1.end();
+      await tokenInsertionQueryClient.end();
       const token = insertToken.rows[0] as TokenResource;
       // store token association with user in database
-      await pgClient2.connect();
-      await pgClient2.query(
+      await tokenAssociationQueryClient.connect();
+      await tokenAssociationQueryClient.query(
         "INSERT INTO tokens_users(token_id, user_id, type) VALUES ($1, $2, $3) RETURNING *",
-        [token.id, user.id, verifToken.type.toLowerCase()]
+        [token.id, user.id, newToken.type.toLowerCase()]
       );
-      await pgClient2.end();
+      await tokenAssociationQueryClient.end();
       outcome = true;
     }
   } catch (error) {
