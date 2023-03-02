@@ -33,6 +33,8 @@ export class MigrationType {
   }
 }
 
+export type PendingUserModificationType = "email" | "password";
+
 export interface PgClientConfigType {
   database: string;
   host: string;
