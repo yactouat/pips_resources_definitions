@@ -20,7 +20,7 @@ export interface ImageResource {
 }
 
 export interface PendingUserModificationResource {
-  commited_at?: string;
+  committed_at?: string;
   created_at: string;
   id: number;
   field: PendingUserModificationType;
