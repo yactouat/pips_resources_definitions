@@ -1,4 +1,8 @@
-import { SocialHandleType, TokenType } from "./types";
+import {
+  PendingUserModificationType,
+  SocialHandleType,
+  TokenType,
+} from "./types";
 
 export interface BlogPostResource {
   contents: string;
@@ -13,6 +17,14 @@ export interface ImageResource {
   caption: string;
   name: string;
   public: boolean;
+}
+
+export interface PendingUserModificationResource {
+  commited_at?: string;
+  created_at: string;
+  id: number;
+  field: PendingUserModificationType;
+  value: string;
 }
 
 export interface TokenResource {
