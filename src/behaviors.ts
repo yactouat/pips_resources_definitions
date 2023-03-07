@@ -89,11 +89,9 @@ export const getPgClient = (): Client => {
 
 export const getUserFromDbWithEmail = async (
   email: string,
-  pgClient: Client,
   hideUserPassword = true
 ): Promise<UserResource | null> => {
-  await pgClient.connect();
-  const userSelectQuery = await pgClient.query(
+  const userSelectQuery = await runPgQuery(
     `SELECT * FROM users WHERE email = $1`,
     [email]
   );
@@ -102,7 +100,6 @@ export const getUserFromDbWithEmail = async (
     user = userSelectQuery.rows[0] as UserResource;
     user.password = hideUserPassword ? null : user.password;
   }
-  await pgClient.end();
   return user;
 };
 
@@ -129,17 +126,14 @@ export const linkTokenToUserMod = async (
   userModId: number
 ): Promise<boolean> => {
   let tokenHasBeenLinked = false;
-  const tokenAssociationQueryClient = getPgClient();
   try {
     // store token association with user in database
-    await tokenAssociationQueryClient.connect();
-    await tokenAssociationQueryClient.query(
+    await runPgQuery(
       `UPDATE pending_user_modifications 
        SET token_id = (SELECT id FROM tokens WHERE token = $1) 
        WHERE id = $2 RETURNING *`,
-      [userToken, userModId]
+      [userToken, userModId.toString()]
     );
-    await tokenAssociationQueryClient.end();
     tokenHasBeenLinked = true;
   } catch (error) {
     console.error(error);
@@ -173,9 +167,6 @@ export const saveUserToken = async (
   tokenType: TokenType
 ): Promise<string> => {
   let createdToken = "";
-  // we need two connections here: one for the token and one for the association, that uses the returned token id
-  const tokenInsertionQueryClient = getPgClient();
-  const tokenAssociationQueryClient = getPgClient();
   // creating a token
   const newToken: TokenResource = {
     type: tokenType,
@@ -183,29 +174,37 @@ export const saveUserToken = async (
   };
   try {
     // get user linked to email
-    const user = await getUserFromDbWithEmail(userEmail, getPgClient());
+    const user = await getUserFromDbWithEmail(userEmail);
     if (user != null) {
       // store token in database
-      await tokenInsertionQueryClient.connect();
-      const insertToken = await tokenInsertionQueryClient.query(
+      const insertToken = await runPgQuery(
         "INSERT INTO tokens(token) VALUES ($1) RETURNING *",
         [newToken.token]
       );
-      await tokenInsertionQueryClient.end();
       const token = insertToken.rows[0] as TokenResource;
       // store token association with user in database
-      await tokenAssociationQueryClient.connect();
-      await tokenAssociationQueryClient.query(
+      await runPgQuery(
         "INSERT INTO tokens_users(token_id, user_id, type) VALUES ($1, $2, $3) RETURNING *",
-        [token.id, user.id, newToken.type.toLowerCase()]
+        [
+          token.id ? token.id.toString() : "",
+          user.id ? user.id.toString() : "",
+          newToken.type.toLowerCase(),
+        ]
       );
-      await tokenAssociationQueryClient.end();
       createdToken = newToken.token;
     }
   } catch (error) {
     console.error(error);
   }
   return createdToken;
+};
+
+export const runPgQuery = async (sqlQuery: string, params: string[] = []) => {
+  const pgClient = getPgClient();
+  await pgClient.connect();
+  const query = await pgClient.query(sqlQuery, params);
+  await pgClient.end();
+  return query;
 };
 
 export const sendJsonResponse = (
