@@ -104,20 +104,17 @@ export const getUserFromDbWithEmail = async (
 };
 
 export const getUserFromDbWithId = async (
-  id: number,
-  pgClient: Client
+  id: number
 ): Promise<UserResource | null> => {
-  await pgClient.connect();
-  const userSelectQuery = await pgClient.query(
+  const userSelectQuery = await runPgQuery(
     `SELECT * FROM users WHERE id = $1`,
-    [id]
+    [id.toString()]
   );
   let user: UserResource | null = null;
   if (userSelectQuery.rowCount > 0) {
     user = userSelectQuery.rows[0] as UserResource;
     user.password = null;
   }
-  await pgClient.end();
   return user;
 };
 
