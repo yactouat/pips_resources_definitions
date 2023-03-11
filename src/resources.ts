@@ -4,6 +4,10 @@ import {
   TokenType,
 } from "./types";
 
+/**
+ * these shared DTOs are meant to be used by backends and frontends of the PIPS system
+ */
+
 export interface BlogPostResource {
   contents: string;
   date: string;
@@ -37,6 +41,7 @@ export interface TokenResource {
 export interface UserResource {
   id?: number;
   email: string;
+  hasPendingModifications?: boolean;
   socialHandle: string;
   socialHandleType: SocialHandleType;
   password: string | null;
