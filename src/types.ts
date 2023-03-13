@@ -48,6 +48,7 @@ export type SocialHandleType = "GitHub" | "LinkedIn";
 
 export type TokenType =
   | "User_Authentication"
+  | "User_Deletion"
   | "User_Modification"
   | "User_Verification";
 
